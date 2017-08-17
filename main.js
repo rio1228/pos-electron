@@ -16,6 +16,8 @@ const portNo = 3000
 const BrowserWindow = electron.BrowserWindow
 //プロセス間通信をするためのもの
 const {ipcMain} = require('electron');
+const session = require('express-session')
+const users = require('./app/components/counter')
 const path = require('path')
 const url = require('url')
 const ip_address = '127.0.0.1'
@@ -29,6 +31,7 @@ app.use(express.static("./"));
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 // Electronのライフサイクルを定義
+
 let mainWindow //メインウィンドウを表す変数
 
 // ウィンドウを作成してコンテンツを読み込む

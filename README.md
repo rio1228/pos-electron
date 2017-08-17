@@ -9,7 +9,12 @@ git clone https://github.com/rio1228/pos-electron.git
 ```
 npm install
 ```
-3. start
+3. build
+```
+
+yarn build
+```
+4. start
 ```
 yarn start
 ```
@@ -37,6 +42,25 @@ yarn build
 ```
 npm run-script build
 ```
+プロジェクトを.asarファイルにまとめる
+```
+yarn component
+```
+プロジェクトをパッケージ化
+```
+yarn package
+```
+
+## package.jsonのscriptsの説明
+start…electronをパッケージ化せずに起動
+build…webpackでソースをまとめる
+build-w…webpackするファイルの変更を監視
+component…webpackでまとめたフォルダをasarファイルにまとめる
+package…プロジェクトのパッケージ化
+repackage…プロジェクトのパッケージ化(上書きする時に使う。一度パッケージ化した後は上書きにしないとエラーになる)
+all-package…上記のbuild,component,packageをまとめたもの。
+all-repackage…上記のbuildmcomponent,repackageをまとめたもの
+
 
 ## 注意点
 winsowsの場合、macのプロジェクトのアプリをパッケージングしたい時はコマンドプロンプトを管理者権限で実行する必要がある

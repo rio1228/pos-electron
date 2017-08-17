@@ -3,6 +3,31 @@
  */
 "use strict";
 import React, {Component} from 'react';
+import Menu from './menu'
+
+const styles = {
+    wrapper: {
+      backgroundColor:'#85737a',
+        width: 500
+    },
+    button: {
+        width: 100,
+        height: '30px',
+        padding: '10px',
+        backgroundColor: 'lightgray',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin:'10px auto',
+    },
+    text: {
+        fontSize:100,
+        color:'#ff1cba',
+        textAlign: 'center'
+    },
+    buttonText:{
+        color:'#434bff'
+    }
+};
 
 
 class main extends Component {
@@ -48,42 +73,40 @@ class main extends Component {
         //    console.log('componentWillUnmount')
     }
 
+    notification (e) {
+        new Notification("Hello World");
+    }
+    // mysqlと接続するためのfunction
+    mysql () {
+        const {ipcRenderer} = require('electron');
+        // // 非同期通信の結果を受けたときのコールバック
+        ipcRenderer.on('async-reply', (event, arg) => {
+            for (let i = 0; i<arg.length; i++) {
+                console.log(arg[i]['k_no'])
+                console.log(arg[i]['k_name'])
+                console.log(arg[i]['k_ado'])
+                console.log(arg[i]['k_sei'])
+                console.log(arg[i]['k_nen'])
+                console.log(arg[i]['k_id'])
+                console.log(arg[i]['k_pass'])
+            }
+        });
+        // メインプロセスに引数を送信
+        ipcRenderer.send('async', { value:200 });
+    }
+
     render() {
+        const Notification = e => this.notification(e)
+        const mysql = () =>this.mysql()
         //   console.log('render')
         return (
             <div className="window">
                 <div className="window-content">
-                    <nav className="nav-group" style={{backgroundColor: '#f5f5f4'}}>
-                        <h4 className="nav-group-title">
-                            <span className="icon icon-home"/>
-                            分析
-                        </h4>
-                        <a className="nav-group-item active">
-                            <span className="icon icon-home"/>
-                            売上分析
-                        </a>
-                        <span className="nav-group-item">
-                            <span className="icon icon-download"/>
-                            販売分析
-                        </span>
-                        <h4 className="nav-group-title">管理</h4>
-                        <span className="nav-group-item">
-                            <span className="icon icon-folder"/>
-                            発注管理
-                        </span>
-                        <span className="nav-group-item">
-                            <span className="icon icon-signal"/>
-                            在庫管理
-                        </span>
-                        <span className="nav-group-item">
-                            <span className="icon icon-print"/>
-                            日報
-                        </span>
-                        <span className="nav-group-item">
-                            <span className="icon icon-cloud"/>
-                            売上
-                        </span>
-                    </nav>
+                    <Menu/>
+                    <div style={styles.wrapper}>
+                        <div><button onClick={Notification}>通知するよ</button></div>
+                        <div><button onClick={mysql}>mysqlに接続</button></div>
+                    </div>
                 </div>
             </div>
         )
