@@ -1,33 +1,67 @@
 /**
  * Created by Ryo Mikami on 2017/08/10.
  */
-// import React from 'react'
-// import ReactDOM from  'react-dom'
-//
-// const dom = <div> {/*この中にコンポーネントを配置*/} </div>
-// ReactDOM.render(dom, document.getElementById('root'))
-
 const electron = require('electron')
-// Module to control application life.
-const express = require("express");
-const app = express();
+const express = require("express")
+const app = express()
+const logger = require('morgan')//コマンドプロンプトでlogが見れるようにするためのもの
+app.use(logger('dev'))
+
+//プロセス間通信をするためのもの
+const {ipcMain} = require('electron')
+
+// セッション
+const session = require('express-session')
+
+const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
+
+// htmlをレンダリングするためのもの
+var engine = require('consolidate');
+app.set('views', __dirname + '/view/entry/');
+app.engine('html', engine.mustache);
+app.set('view engine', 'html');
+
 const portNo = 3000
+const ip_address = '127.0.0.1'
+
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
-//プロセス間通信をするためのもの
-const {ipcMain} = require('electron');
-const session = require('express-session')
-const users = require('./app/components/counter')
-const path = require('path')
-const url = require('url')
-const ip_address = '127.0.0.1'
-app.listen(portNo, ip_address);
+
+//path
+const routes = require( __dirname + '/controller/routes/index')
+const login = require( __dirname + '/controller/routes/login')
+const logout = require( __dirname + '/controller/routes/logout')
+
+app.listen(portNo, ip_address)
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 30 * 60 * 1000
+    }
+}))
+
 //開発中のディレクトリ構造
 //開発中はこれをコメントから外す
-app.use(express.static("./"));
+// app.use(express.static("./"))
+
+const loginCheck = function(req, res, next) {
+    if (req.session.user) {
+        next()
+    } else {
+        res.redirect('/login')
+    }
+}
+
+app.use('/login', login)  // 追加
+app.use('/logout', login)  // 追加
+app.use('/', loginCheck, routes)  // sessionCheckを前処理に追加
+
 // ビルド後のディレクトリ構造
 // 開発中はコメントアウトする
-// app.use(express.static("./resources/app/"));
+// app.use(express.static("./resources/app/"))
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 // Electronのライフサイクルを定義
@@ -40,7 +74,7 @@ function createWindow () {
     // Create the browser window.
     mainWindow = new BrowserWindow({width: 800, height: 600})
 
-    // and load the index.html of the app.
+    // and load the login.html of the app.
     mainWindow.loadURL(`http://${ip_address}:${portNo}/`)
 
     // Open the DevTools.
@@ -74,20 +108,21 @@ electron.app.on('activate', function () {
 // 非同期プロセス通信
 //レンダラプロセスから呼び出される
 ipcMain.on('async',( event, args ) =>{
-    console.log( args );
-    const mysql = require('mysql');
+    // console.log( args )
+    // データベースの設定情報
+    const mysql = require('mysql')
     const connection = mysql.createConnection({
         host : 'localhost',
         user : 'root',
         password : '',
         port : 3306,
         database: 'taiken'
-    });
-    connection.connect();
-    connection.query('SELECT * from kyak LIMIT 10;', (err, rows, fields) => {
-        if (err) throw err;
+    })
+    connection.connect()
+    connection.query('SELECT * from kyak LIMIT 10', (err, rows, fields) => {
+        if (err) throw err
 
         // レンダラプロセスへ送る
-        event.sender.send('async-reply', rows);
-    });
-});
+        event.sender.send('async-reply', rows)
+    })
+})

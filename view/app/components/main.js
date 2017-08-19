@@ -4,6 +4,7 @@
 "use strict";
 import React, {Component} from 'react';
 import Menu from './menu'
+import Login from './login'
 
 const styles = {
     wrapper: {
@@ -35,47 +36,6 @@ class main extends Component {
         super(props)
         this.state = {value: ''}
     }
-
-    // コンポーネントがDOMにマウントされる直前に呼び出される
-    componetWillMount() {
-        //    console.log('componentWillMount')
-    }
-
-    // コンポーネントがDOMにマウントされた直後に呼び出される
-    componentDidMount() {
-        //    console.log('componentDidMount')
-    }
-
-    // コンポーネントのプロパティが変更された時に呼び出される
-    componentWillReceiveProps(nextprops) {
-        //  console.log('componentWillReceiveProps')
-        //   console.log(nextprops)
-    }
-
-    コンポーネントの外観を更新してよいかどうか判断するとき呼び出される
-
-    shouldComponentUpdate(nextprops, nextState) {
-        //    console.log('componentWillReceiveProps')
-        return true
-    }
-
-
-    componentWillUpdate() {
-        //   console.log('componentWillUpdate')
-    }
-
-    componentDidUpdate() {
-        //   console.log('componentDidUpdate')
-    }
-
-    // アンマウント
-    componentWillUnmount() {
-        //    console.log('componentWillUnmount')
-    }
-
-    notification (e) {
-        new Notification("Hello World");
-    }
     // mysqlと接続するためのfunction
     mysql () {
         const {ipcRenderer} = require('electron');
@@ -96,17 +56,11 @@ class main extends Component {
     }
 
     render() {
-        const Notification = e => this.notification(e)
-        const mysql = () =>this.mysql()
-        //   console.log('render')
         return (
             <div className="window">
                 <div className="window-content">
                     <Menu/>
-                    <div style={styles.wrapper}>
-                        <div><button onClick={Notification}>通知するよ</button></div>
-                        <div><button onClick={mysql}>mysqlに接続</button></div>
-                    </div>
+                    <Login/>
                 </div>
             </div>
         )

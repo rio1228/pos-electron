@@ -1,4 +1,4 @@
-# ctron-template
+# electron-template
 
 ## プロジェクトの作り方
 1. gitから落とす

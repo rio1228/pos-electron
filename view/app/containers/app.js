@@ -6,7 +6,7 @@ import { createStore, applyMiddleware, combineReducers } from 'redux';
 
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import * as reducers from '../reducers';
+import * as reducers from '../reducers/index';
 import PosApp from './posApp';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);//何をmiddlewareとして、使うのかを設定してる。多分この順番に通ってくる

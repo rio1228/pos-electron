@@ -32,12 +32,13 @@ const externalPlugins = new webpack.ExternalsPlugin('commonjs',[
 
 module.exports = {
     entry: {
-        index:path.join(__dirname, 'app', 'index.js')
+        index:path.join(__dirname, '/view/app', 'index.js'),
+        // login:path.join(__dirname, '/view/login', 'index.js'),
+        // logout:path.join(__dirname, '/view/logout', 'index.js')
     },
     output: {
         path: path.join(__dirname, 'out'),
-        filename: '[name].js',
-        libraryTarget: 'commonjs2', // モジュールを呼ぶための方式を指定
+        filename: '[name].js'
     },
     module: {
         rules: [
