@@ -45,7 +45,8 @@ app.use(session({
 
 //開発中のディレクトリ構造
 //開発中はこれをコメントから外す
-// app.use(express.static("./"))
+//これの役割は静的ファイルの置き場所がどこか指定してあげるもの
+app.use(express.static(__dirname + '/'))
 
 const loginCheck = function(req, res, next) {
     if (req.session.user) {
