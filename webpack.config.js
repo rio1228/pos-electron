@@ -33,8 +33,8 @@ const externalPlugins = new webpack.ExternalsPlugin('commonjs',[
 module.exports = {
     entry: {
         index:path.join(__dirname, '/view/app', 'index.js'),
-        // login:path.join(__dirname, '/view/login', 'index.js'),
-        // logout:path.join(__dirname, '/view/logout', 'index.js')
+        login:path.join(__dirname, '/view/login', 'index.js'),
+        logout:path.join(__dirname, '/view/logout', 'index.js')
     },
     output: {
         path: path.join(__dirname, 'out'),
