@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/', function(req, res, next) {
     console.log('index.js')//ここまできてる
-    res.render('../../login.html')
+    res.render('../../view/entry/index/')
 
 });
 

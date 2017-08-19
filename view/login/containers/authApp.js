@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import Main from '../components/main';
-import * as counterActions from '../actions/counterActions';
+import * as counterActions from '../actions/authActions';
 import { connect } from 'react-redux';
 
 class CounterApp extends Component {

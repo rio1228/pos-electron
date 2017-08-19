@@ -17,7 +17,7 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 
 // htmlをレンダリングするためのもの
-var engine = require('consolidate');
+const engine = require('consolidate');
 app.set('views', __dirname + '/view/entry/');
 app.engine('html', engine.mustache);
 app.set('view engine', 'html');
@@ -45,7 +45,9 @@ app.use(session({
 
 //開発中のディレクトリ構造
 //開発中はこれをコメントから外す
+
 //これの役割は静的ファイルの置き場所がどこか指定してあげるもの
+//もう少しこれの指定は考えた方がいい気がする。
 app.use(express.static(__dirname + '/'))
 
 const loginCheck = function(req, res, next) {
@@ -56,8 +58,10 @@ const loginCheck = function(req, res, next) {
     }
 }
 
+// ルーティング
+// app.use('このディレクトリに来たら','このディレクトリに遷移する')
 app.use('/login', login)  // 追加
-app.use('/logout', login)  // 追加
+app.use('/logout', logout)  // 追加
 app.use('/', loginCheck, routes)  // sessionCheckを前処理に追加
 
 // ビルド後のディレクトリ構造
@@ -75,7 +79,7 @@ function createWindow () {
     // Create the browser window.
     mainWindow = new BrowserWindow({width: 800, height: 600})
 
-    // and load the login.html of the app.
+    // and load the index.html of the app.
     mainWindow.loadURL(`http://${ip_address}:${portNo}/`)
 
     // Open the DevTools.
@@ -125,5 +129,45 @@ ipcMain.on('async',( event, args ) =>{
 
         // レンダラプロセスへ送る
         event.sender.send('async-reply', rows)
+    })
+})
+
+ipcMain.on('async-login',( event, args ) =>{
+    const query_id = args.id
+    const query_pass = args.password
+    console.log('async-login!');
+    // データベースの設定情報
+    const mysql = require('mysql')
+    const connection = mysql.createConnection({
+        host : 'localhost',
+        user : 'root',
+        password : '',
+        port : 3306,
+        database: 'taiken'
+    })
+    connection.connect()
+    connection.query('SELECT k_no, k_name from kyak where k_id = "' + query_id + '" and k_pass = '+ query_pass, (err, results, fields) => {
+        if (err) throw err
+        const numRows = results.length;
+
+        if (numRows) {
+            const id = results[0].k_no
+            const name = results[0].k_name
+            console.log('true')
+            /*ログイン機能*/
+            const setSession = (req, res) => {
+                console.log('setSession')
+                req.session.user = {
+                    id:id,
+                    name:name
+                }
+                res.redirect('/')
+            }
+            setSession()
+        }else {
+            // レンダラプロセスへ送る
+            event.sender.send('login-reply', 'false')
+        }
+        connection.end()
     })
 })

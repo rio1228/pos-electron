@@ -3,7 +3,7 @@
  */
 import React from 'react'
 import ReactDOM from  'react-dom'
-import App from './containers/app'
-
-const dom = <div><App/></div>
+// import App from './containers/app'
+import Main from './components/main'
+const dom = <div><Main/></div>
 ReactDOM.render(dom, document.getElementById('root'))

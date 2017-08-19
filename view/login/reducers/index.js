@@ -1,8 +1,8 @@
 
-import counter from './counter';
+import auth from './auth';
 
 export {
-  counter
+  auth
 };
 // counterで記述したreducerをここでまとめてexportしてる
 // つまり、複数のreducerをここに集めてしまって、containersのappに送ってしまえばいい。

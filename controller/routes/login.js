@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
     console.log('login.js')//ここまできてる
     console.log(__dirname)
     console.log(__filename)
-    res.render('../../view/entry/')
+    res.render('../../view/entry/login/')
     console.log('done')
 });
 
