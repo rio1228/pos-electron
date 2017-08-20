@@ -4,12 +4,15 @@
 "use strict";
 import React, {Component} from 'react';
 import Menu from './menu'
-import Login from './login'
+import Content from './contents'
+import {
+    BrowserRouter as Router,
+}from 'react-router-dom'
+import { browserHistory } from 'react-router';
 
 const styles = {
     wrapper: {
-      backgroundColor:'#85737a',
-        width: 500
+      backgroundColor:'#ff2e50'
     },
     button: {
         width: 100,
@@ -32,37 +35,23 @@ const styles = {
 
 
 class main extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {value: ''}
-    }
-    // mysqlと接続するためのfunction
-    mysql () {
-        const {ipcRenderer} = require('electron');
-        // // 非同期通信の結果を受けたときのコールバック
-        ipcRenderer.on('async-reply', (event, arg) => {
-            for (let i = 0; i<arg.length; i++) {
-                console.log(arg[i]['k_no'])
-                console.log(arg[i]['k_name'])
-                console.log(arg[i]['k_ado'])
-                console.log(arg[i]['k_sei'])
-                console.log(arg[i]['k_nen'])
-                console.log(arg[i]['k_id'])
-                console.log(arg[i]['k_pass'])
-            }
-        });
-        // メインプロセスに引数を送信
-        ipcRenderer.send('async', { value:200 });
-    }
-
-    render() {
+      render() {
         return (
             <div className="window">
                 <div className="window-content">
-                    <Menu/>
-                    <Login/>
+                    <Router>
+                        <div>
+                            <div className="menu">
+                                <Menu/>
+                            </div>
+                            <div className="content">
+                                <Content/>
+                            </div>
+                        </div>
+                    </Router>
                 </div>
             </div>
+
         )
     }
 }

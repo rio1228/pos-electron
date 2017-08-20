@@ -15,7 +15,20 @@ const session = require('express-session')
 
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
+const mysql = require('mysql')
+const connection = mysql.createConnection({
+    host : 'localhost',
+    user : 'root',
+    password : '',
+    port : 3306,
+    database: 'taiken'
+})
 
+// urlencodedとjsonは別々に初期化する
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
 // htmlをレンダリングするためのもの
 const engine = require('consolidate');
 app.set('views', __dirname + '/view/entry/');
@@ -32,6 +45,7 @@ const BrowserWindow = electron.BrowserWindow
 const routes = require( __dirname + '/controller/routes/index')
 const login = require( __dirname + '/controller/routes/login')
 const logout = require( __dirname + '/controller/routes/logout')
+// const analysis = require( __dirname + '/controller/routes/analysis')
 
 app.listen(portNo, ip_address)
 app.use(session({
@@ -51,17 +65,39 @@ app.use(session({
 app.use(express.static(__dirname + '/'))
 
 const loginCheck = function(req, res, next) {
+    req.session.user = {name: '三上',id: ''}//開発中のみ
     if (req.session.user) {
         next()
     } else {
         res.redirect('/login')
     }
 }
+app.post('/login', function(req, res) {
+    const query_id = req.body.id
+    const query_pass = req.body.pass
 
+    connection.connect()
+    connection.query('SELECT k_no, k_name from kyak where k_id = "' + query_id + '" and k_pass = '+ query_pass, (err, results, fields) => {
+        if (err) throw err
+        const numRows = results.length;
+
+        if (numRows) {
+            const id = results[0].k_no
+            const name = results[0].k_name
+            req.session.user = {name: name,id: id, auth: 'ok'};
+            res.redirect('/');
+        }else {
+            // req.session.user = {auth: 'no'}
+            res.redirect('/');
+        }
+        connection.end()
+    })
+})
 // ルーティング
 // app.use('このディレクトリに来たら','このディレクトリに遷移する')
 app.use('/login', login)  // 追加
 app.use('/logout', logout)  // 追加
+// app.use('/analysis', analysis)  // 追加
 app.use('/', loginCheck, routes)  // sessionCheckを前処理に追加
 
 // ビルド後のディレクトリ構造
@@ -132,42 +168,32 @@ ipcMain.on('async',( event, args ) =>{
     })
 })
 
-ipcMain.on('async-login',( event, args ) =>{
-    const query_id = args.id
-    const query_pass = args.password
-    console.log('async-login!');
-    // データベースの設定情報
-    const mysql = require('mysql')
-    const connection = mysql.createConnection({
-        host : 'localhost',
-        user : 'root',
-        password : '',
-        port : 3306,
-        database: 'taiken'
-    })
-    connection.connect()
-    connection.query('SELECT k_no, k_name from kyak where k_id = "' + query_id + '" and k_pass = '+ query_pass, (err, results, fields) => {
-        if (err) throw err
-        const numRows = results.length;
-
-        if (numRows) {
-            const id = results[0].k_no
-            const name = results[0].k_name
-            console.log('true')
-            /*ログイン機能*/
-            const setSession = (req, res) => {
-                console.log('setSession')
-                req.session.user = {
-                    id:id,
-                    name:name
-                }
-                res.redirect('/')
-            }
-            setSession()
-        }else {
-            // レンダラプロセスへ送る
-            event.sender.send('login-reply', 'false')
-        }
-        connection.end()
-    })
-})
+// ipcMain.on('async-login',( event, args ) =>{
+//     const query_id = args.id
+//     const query_pass = args.password
+//     console.log('async-login!');
+//     // データベースの設定情報
+//     const mysql = require('mysql')
+//     const connection = mysql.createConnection({
+//         host : 'localhost',
+//         user : 'root',
+//         password : '',
+//         port : 3306,
+//         database: 'taiken'
+//     })
+//     connection.connect()
+//     connection.query('SELECT k_no, k_name from kyak where k_id = "' + query_id + '" and k_pass = '+ query_pass, (err, results, fields) => {
+//         if (err) throw err
+//         const numRows = results.length;
+//
+//         if (numRows) {
+//             id = results[0].k_no
+//             name = results[0].k_name
+//             event.sender.send('login-reply', 'true')
+//         }else {
+//             // レンダラプロセスへ送る
+//             event.sender.send('login-reply', 'false')
+//         }
+//         connection.end()
+//     })
+// })
