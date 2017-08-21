@@ -10,11 +10,8 @@
     "start": "electron .",
     "build": "webpack",
     "build-w": "webpack --watch",
-    "component": "asar pack ./out ./project.asar",
-    "all-package": "webpack && asar pack ./out ./project.asar && electron-packager . pos-system --platform=win32 --arch=x64 --prune=true  --out=release-builds",
-    "all-repackage": "webpack && asar pack ./out ./project.asar && electron-packager . pos-system --platform=win32 --arch=x64 --prune=true  --out=release-builds --overwrite",
-    "package": "electron-packager ./ pos-system --platform=win32 --arch=x64 --prune=true  --out=release-builds",
-    "repackage": "electron-packager . pos-system --platform=win32 --arc=x64 --prune=true  --out=release-builds --overwrite"
+    "all-package": "webpack && electron-packager ./ pos-system --platform=all --arch=x64 --prune=true --icon=icon.ico  --out=release-builds --overwrite",
+    "package": "electron-packager ./ pos-system --platform=all --arch=x64 --prune=true --icon=icon.ico --out=release-builds"
   },
   "keywords": [],
   "author": "Ryo Mikami",
