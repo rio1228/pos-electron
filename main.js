@@ -2,19 +2,22 @@
  * Created by Ryo Mikami on 2017/08/10.
  */
 const electron = require('electron')
+/**
+ *  expressモジュールをロードし、インスタンス化してappに代入。*/
 const express = require("express")
 const app = express()
-const logger = require('morgan')//コマンドプロンプトでlogが見れるようにするためのもの
+
+/**
+ * コマンドプロンプトからlogを見れるようにするためのもの
+ * @type {morgan}
+ */
+const logger = require('morgan')
 app.use(logger('dev'))
-
-//プロセス間通信をするためのもの
-const {ipcMain} = require('electron')
-
-// セッション
-const session = require('express-session')
-
 const cookieParser = require('cookie-parser')
-const bodyParser = require('body-parser')
+
+/**
+ * DB情報の設定
+ */
 const mysql = require('mysql')
 const connection = mysql.createConnection({
     host : 'localhost',
@@ -23,31 +26,52 @@ const connection = mysql.createConnection({
     port : 3306,
     database: 'taiken'
 })
+/**
+ * end
+ */
 
-// urlencodedとjsonは別々に初期化する
+/**
+ * urlencodedとjsonは別々に初期化する
+ */
+const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
-// htmlをレンダリングするためのもの
+
+/**
+ * htmlをレンダリングするためのもの
+ */
 const engine = require('consolidate');
 app.set('views', __dirname + '/view/entry/');
 app.engine('html', engine.mustache);
 app.set('view engine', 'html');
 
-const portNo = 3000
-const ip_address = '127.0.0.1'
-
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
-
-//path
+/**
+ * path
+ * @type {any}
+ */
 const routes = require( __dirname + '/controller/routes/index')
 const login = require( __dirname + '/controller/routes/login')
 const logout = require( __dirname + '/controller/routes/logout')
-// const analysis = require( __dirname + '/controller/routes/analysis')
+/**
+ * end
+ */
 
+/**
+ * listen()メソッドを実行して3000番ポートで待ち受け。
+ **/
+const portNo = 3000
+const ip_address = '127.0.0.1'
 app.listen(portNo, ip_address)
+/**
+ * end
+ */
+
+/**
+ * セッションスタート
+ */
+const session = require('express-session')
 app.use(session({
     secret: 'keyboard cat',
     resave: false,
@@ -56,27 +80,87 @@ app.use(session({
         maxAge: 30 * 60 * 1000
     }
 }))
+// app.use(function(req, res, next){
+//     res.locals.user = req.session.user;
+//     next();
+// });
+/**
+ * end
+ */
 
-//開発中のディレクトリ構造
-//開発中はこれをコメントから外す
-
-//これの役割は静的ファイルの置き場所がどこか指定してあげるもの
-//もう少しこれの指定は考えた方がいい気がする。
-app.use(express.static(__dirname + '/'))
-
+/**
+ * ユーザーがログインしているかのチェック
+ * @param req
+ * @param res
+ * @param next
+ */
 const loginCheck = function(req, res, next) {
-    req.session.user = {name: '三上',id: ''}//開発中のみ
+    // req.session.user = {name: '三上',id: ''}//開発中のみ
     if (req.session.user) {
         next()
     } else {
         res.redirect('/login')
     }
 }
-app.post('/login', function(req, res) {
-    const query_id = req.body.id
-    const query_pass = req.body.pass
+/**
+ * end
+ */
 
-    connection.connect()
+/**
+ * 開発中のディレクトリ構造-start-
+ * 開発中はこれをコメントから外す
+ * これの役割は静的ファイルの置き場所がどこか指定してあげるもの
+ * もう少しこれの指定は考えた方がいい気がする。
+ */
+app.use(express.static(__dirname + '/'))
+/**
+ * 開発中のディレクトリ構造-end-
+ */
+
+/**
+ * ビルド後のディレクトリ構造- for windows - start
+ * 開発中はコメントアウトする
+ */
+// app.use(express.static("./resources/app/"))
+/**
+ * ビルド後のディレクトリ構造- for windows - end
+ */
+
+/**
+ * getからのルーティング-start
+ */
+app.get('/analysis/sale', (req,res) => {
+    res.redirect('/');
+})
+app.get('/analysis/purchase', (req,res) => {
+    res.redirect('/');
+})
+app.get('/management/order', (req,res) => {
+    res.redirect('/');
+})
+app.get('/management/stock', (req,res) => {
+    res.redirect('/');
+})
+app.get('/management/daily-report', (req,res) => {
+    res.redirect('/');
+})
+app.get('/management/sale', (req,res) => {
+    res.redirect('/');
+})
+app.get('/logout', (req,res) => {
+    res.redirect('/');
+})
+/**
+ * getからのルーティング-end
+ */
+
+/**
+ * postからのルーティング-start
+ */
+app.post('/login', function(req, res) {
+    let query_id = req.body.id
+    let query_pass = req.body.pass
+    // connection.connect()//書く必要がない
     connection.query('SELECT k_no, k_name from kyak where k_id = "' + query_id + '" and k_pass = '+ query_pass, (err, results, fields) => {
         if (err) throw err
         const numRows = results.length;
@@ -90,45 +174,58 @@ app.post('/login', function(req, res) {
             // req.session.user = {auth: 'no'}
             res.redirect('/');
         }
-        connection.end()
+        // connection.end()
     })
 })
-// ルーティング
-// app.use('このディレクトリに来たら','このディレクトリに遷移する')
+app.post('/logout', (req,res) => {
+    req.session.destroy();
+    res.redirect('/login');
+})
+/**
+ * postからのルーティング-end
+ */
+
+/**
+ * ルーティング-start-
+ * app.use('このディレクトリに来たら','このディレクトリに遷移する')
+ */
 app.use('/login', login)  // 追加
-app.use('/logout', logout)  // 追加
-// app.use('/analysis', analysis)  // 追加
+// app.use('/logout', logout)  // 追加
 app.use('/', loginCheck, routes)  // sessionCheckを前処理に追加
+/**
+ * ルーティング-end-
+ */
 
-// ビルド後のディレクトリ構造
-// 開発中はコメントアウトする
-// app.use(express.static("./resources/app/"))
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-// Electronのライフサイクルを定義
-
+/**
+ * electron.appの場所-start-
+ */
+/**
+ * Keep a global reference of the window object, if you don't, the window will
+ * be closed automatically when the JavaScript object is garbage collected.
+ * Electronのライフサイクルを定義
+ */
 let mainWindow //メインウィンドウを表す変数
-
-// ウィンドウを作成してコンテンツを読み込む
+// Module to create native browser window.
+const BrowserWindow = electron.BrowserWindow
+/**
+ * ウィンドウを作成してコンテンツを読み込む
+ */
 function createWindow () {
-
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 800, height: 600})
-
+    mainWindow = new BrowserWindow({width: 800, height: 600,useContentSize: true,})
     // and load the index.html of the app.
     mainWindow.loadURL(`http://${ip_address}:${portNo}/`)
-
     // Open the DevTools.
     mainWindow.webContents.openDevTools()
-
     // Emitted when the window is closed.
     mainWindow.on('closed', electron.app.quit)
 }
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+/**
+ * This method will be called when Electron has finished
+ * initialization and is ready to create browser windows.
+ * Some APIs can only be used after this event occurs.
+ */
 electron.app.on('ready', createWindow)
-
 // Quit when all windows are closed.
 electron.app.on('window-all-closed', function () {
     // On OS X it is common for applications and their menu bar
@@ -137,7 +234,6 @@ electron.app.on('window-all-closed', function () {
         electron.app.quit()
     }
 })
-
 electron.app.on('activate', function () {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -145,42 +241,29 @@ electron.app.on('activate', function () {
         createWindow()
     }
 })
+/**
+ * electron.appの場所-end-
+ */
 
-// 非同期プロセス通信
-//レンダラプロセスから呼び出される
+/**
+ * プロセス間通信の場所-start-
+ * 非同期プロセス通信
+ * レンダラプロセスから呼び出される
+ */
+const {ipcMain} = require('electron')
 ipcMain.on('async',( event, args ) =>{
-    // console.log( args )
-    // データベースの設定情報
-    const mysql = require('mysql')
-    const connection = mysql.createConnection({
-        host : 'localhost',
-        user : 'root',
-        password : '',
-        port : 3306,
-        database: 'taiken'
-    })
     connection.connect()
     connection.query('SELECT * from kyak LIMIT 10', (err, rows, fields) => {
         if (err) throw err
-
         // レンダラプロセスへ送る
         event.sender.send('async-reply', rows)
     })
+    connection.end()
 })
-
 // ipcMain.on('async-login',( event, args ) =>{
 //     const query_id = args.id
 //     const query_pass = args.password
 //     console.log('async-login!');
-//     // データベースの設定情報
-//     const mysql = require('mysql')
-//     const connection = mysql.createConnection({
-//         host : 'localhost',
-//         user : 'root',
-//         password : '',
-//         port : 3306,
-//         database: 'taiken'
-//     })
 //     connection.connect()
 //     connection.query('SELECT k_no, k_name from kyak where k_id = "' + query_id + '" and k_pass = '+ query_pass, (err, results, fields) => {
 //         if (err) throw err
@@ -197,3 +280,6 @@ ipcMain.on('async',( event, args ) =>{
 //         connection.end()
 //     })
 // })
+/**
+ * プロセス間通信の場所-end-
+ */

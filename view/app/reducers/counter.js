@@ -6,7 +6,7 @@ import * as types from '../actions/actionTypes';
  * @type {{count: number}}
  */
 const initialState = {
-  count: 0
+  // user: user
 };
 /**
  * This is a reducer, a pure function with (state, action) => state signature.

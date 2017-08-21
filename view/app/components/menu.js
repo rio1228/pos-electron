@@ -9,19 +9,25 @@ import {
     NavLink
 }from 'react-router-dom'
 
+
+
 class menu extends Component {
     constructor(props) {
         super(props)
     }
+    logout () {
+        alert('logout')
+    }
 
     render() {
+        const logout = () => this.logout()
         return (
             <nav className="nav-group">
                 <h4 className="nav-group-title">
                     <span className="icon icon-home"/>
                     分析
                 </h4>
-                <span className="nav-group-item active">
+                <span className="nav-group-item">
                     <span className="icon icon-home"/>
                     <Link to='/analysis/sale'>売上分析</Link>
                 </span>
@@ -49,6 +55,10 @@ class menu extends Component {
                 <span className="nav-group-item">
                     <span className="icon icon-cloud"/>
                     <Link to='/'>戻る</Link>
+                </span>
+                <span className="nav-group-item">
+                    <span className="icon icon-cloud"/>
+                    <Link to='/logout'>ログアウト</Link>
                 </span>
             </nav>
         )

@@ -7,7 +7,7 @@ import {
     Switch,
     Route
 }from 'react-router-dom'
-import {Home, Sale,Order,Purchase,Report,SalesManage,Stock} from './contentsDetail'
+import {Home, Sale,Order,Purchase,Report,SalesManage,Stock,Logout} from './contentsDetail'
 
 class contents extends Component {
     constructor(props) {
@@ -25,6 +25,7 @@ class contents extends Component {
                     <Route path="/management/stock" component={Stock} />
                     <Route path="/management/daily-report" component={Report} />
                     <Route path="/management/sale" component={SalesManage} />
+                    <Route path="/logout" component={Logout} />
                 </Switch>
         )
     }

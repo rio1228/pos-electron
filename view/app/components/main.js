@@ -1,50 +1,54 @@
 /**
  * Created by Ryo Mikami on 2017/08/17.
  */
-"use strict";
-import React, {Component} from 'react';
+"use strict"
+import React, {Component} from 'react'
 import Menu from './menu'
 import Content from './contents'
 import {
     BrowserRouter as Router,
 }from 'react-router-dom'
-import { browserHistory } from 'react-router';
+// import { browserHistory } from 'react-router'
+import { StyleSheet, css } from 'aphrodite'
 
-const styles = {
-    wrapper: {
-      backgroundColor:'#ff2e50'
+const styles = StyleSheet.create({
+    wrapper:{
+        width: '100%'
     },
-    button: {
-        width: 100,
-        height: '30px',
-        padding: '10px',
-        backgroundColor: 'lightgray',
-        alignItems: 'center',
-        justifyContent: 'center',
-        margin:'10px auto',
+    menu: {
+        backgroundColor: '#f5f5f4',
+        width: '17%',
+        height: '685px',
+        float: 'left',
+        borderTop: 'solid 1px #c7aeba',
+        borderRight: 'solid 1px #c7aeba',
+        '@media (min-width: 1000px)': {
+            width: '10%'
+        }
     },
-    text: {
-        fontSize:100,
-        color:'#ff1cba',
-        textAlign: 'center'
-    },
-    buttonText:{
-        color:'#434bff'
+    content: {
+        borderTop: 'solid 1px #c7aeba',
+        backgroundColor: '#a6c3ff',
+        overflow: 'hidden',
+        width: '83%',
+        height: '685px','@media (min-width: 1000px)': {
+            width: '90%'
+        }
+
     }
-};
-
+})
 
 class main extends Component {
       render() {
         return (
             <div className="window">
-                <div className="window-content">
+                <div classID="window-content">
                     <Router>
-                        <div>
-                            <div className="menu">
+                        <div className={css(styles.wrapper)}>
+                            <div className={css(styles.menu)}>
                                 <Menu/>
                             </div>
-                            <div className="content">
+                            <div className={css(styles.content)}>
                                 <Content/>
                             </div>
                         </div>
@@ -57,4 +61,4 @@ class main extends Component {
 }
 
 
-export default main;
+export default main
