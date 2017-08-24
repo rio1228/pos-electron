@@ -35,14 +35,16 @@ const styles = StyleSheet.create({
         height: '685px','@media (min-width: 1000px)': {
             width: '90%'
         }
-
+    },
+    form: {
+        margin: 'auto auto'
     }
 })
 
 class main extends Component {
       render() {
         return (
-            <div className="window">
+            localStorage.getItem("hoge") ?  <div className="window">
                 <div classID="window-content">
                     <Router>
                         <div className={css(styles.wrapper)}>
@@ -55,8 +57,14 @@ class main extends Component {
                         </div>
                     </Router>
                 </div>
-            </div>
-
+            </div>　:　<div className={css(styles.form)}>
+                    <form action="./login" method="POST">
+                        <p>ログイン</p>
+                        <input type='text' name="id" placeholder='ログインID'/>
+                        <input type='password' name="pass" placeholder='パスワード'/>
+                        <input type="submit" value='ログイン'/>
+                    </form>
+                </div>
         )
     }
 }
