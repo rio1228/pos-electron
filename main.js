@@ -169,8 +169,8 @@ app.post('/login', function(req, res) {
         const numRows = results.length;
 
         if (numRows) {
-            const id = results[0].k_no
-            const name = results[0].k_name
+            const id = results[0].user_id
+            const name = results[0].user_name
             req.session.user = {name: name,id: id, auth: 'ok'};
             res.redirect('/');
         }else {
@@ -216,8 +216,7 @@ function createWindow () {
     // Create the browser window.
     mainWindow = new BrowserWindow({width: 800, height: 600,useContentSize: true,icon: __dirname + '/asset/img/icon.png',})
     // and load the index.html of the app.
-    // mainWindow.loadURL(`http://${ip_address}:${portNo}/`)
-    localStorage.getItem("message") ? mainWindow.loadURL(__dirname, '/view/entry/index/index.html') : mainWindow.loadURL(__dirname, '/view/entry/login/index.html')
+    mainWindow.loadURL(`http://${ip_address}:${portNo}/`)
 
     // デベロッパーツールを開く
     mainWindow.webContents.openDevTools()
