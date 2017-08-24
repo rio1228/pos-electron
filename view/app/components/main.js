@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
         float: 'left',
         borderTop: 'solid 1px #c7aeba',
         borderRight: 'solid 1px #c7aeba',
+        textDecorationLine: 'none',
         '@media (min-width: 1000px)': {
             width: '10%'
         }

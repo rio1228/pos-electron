@@ -7,7 +7,8 @@ import {
     Switch,
     Route
 }from 'react-router-dom'
-import {Home, Sale,Order,Purchase,Report,SalesManage,Stock,Logout} from './contents-detail/contentsDetail'
+import {Home,Order,Purchase,Report,SalesManage,Stock,Logout} from './contents-detail/contentsDetail'
+import Sale from './contents-detail/Sale'
 
 class contents extends Component {
     constructor(props) {

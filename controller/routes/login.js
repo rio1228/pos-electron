@@ -6,11 +6,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 // app.set('view engine', 'html');
 
 router.get('/', function(req, res, next) {
-    console.log('login.js')//ここまできてる
-    console.log(__dirname)
-    console.log(__filename)
     res.render('../../view/entry/login/')
-    console.log('done')
 });
 
 // router.post('/', function(req, res, next) {

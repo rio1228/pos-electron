@@ -22,7 +22,6 @@ const data = [
     {name: 'Page F', uv: 2390},
     {name: 'Page G', uv: 3490},
 ]
-
 export const Home = () => {
     return (
         <div className={css(styles.body)}>
@@ -62,11 +61,14 @@ export const Stock = () => {
 
 }
 export const Report = () => {
-    return (
-        <div className={css(styles.body)}><h1>日報</h1></div>
-    )
+    return (  <div className={css(styles.body)}>
+        <h1>日報</h1>
+
+    </div>  )
 
 }
+
+
 export const SalesManage = () => {
     return (
         <div className={css(styles.body)}><h1>売上管理</h1></div>

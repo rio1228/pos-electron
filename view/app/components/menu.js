@@ -11,7 +11,8 @@ import { StyleSheet, css } from 'aphrodite'
 
 const styles= StyleSheet.create({
   menu: {
-      color: '#c7aeba'
+      color: '#3c8572',
+      textDecorationLine: 'none'
   }
 })
 
@@ -29,57 +30,55 @@ class menu extends Component {
                 </h4>
                 <span className="nav-group-item">
                     <span className="icon icon-home"/>
-                    <Link to='/analysis/sale'>
-                        <span className={css(styles.menu)}>売上分析</span>
+                    <Link to='/analysis/sale' className={css(styles.menu)}>
+                        売上分析
                     </Link>
                 </span>
                 <span className="nav-group-item">
                     <span className="icon icon-download"/>
-                    <Link to='/analysis/purchase'>
-                       <span className={css(styles.menu)}>販売分析</span>
+                    <Link to='/analysis/purchase' className={css(styles.menu)}>
+                        販売分析
                     </Link>
                 </span>
                 <h4 className="nav-group-title">管理</h4>
                 <span className="nav-group-item">
                     <span className="icon icon-folder"/>
-                    <Link to='/management/order'>
-                        <span className={css(styles.menu)}>発注管理</span>
+                    <Link to='/management/order' className={css(styles.menu)}>
+                        発注管理
                     </Link>
                 </span>
                 <span className="nav-group-item">
                     <span className="icon icon-signal"/>
-                    <Link to='/management/stock'>
-                        <span className={css(styles.menu)}>在庫管理</span>
+                    <Link to='/management/stock' className={css(styles.menu)}>
+                        在庫管理
                     </Link>
                 </span>
                 <span className="nav-group-item">
                     <span className="icon icon-print"/>
-                    <Link to='/management/daily-report'>
-                        <span className={css(styles.menu)}>日報管理</span>
+                    <Link to='/management/daily-report' className={css(styles.menu)}>
+                        日報管理
                     </Link>
                 </span>
                 <span className="nav-group-item">
                     <span className="icon icon-cloud"/>
-                    <Link to='/management/sale'>
-                        <span className={css(styles.menu)}>売上</span>
+                    <Link to='/management/sale' className={css(styles.menu)}>
+                        売上
                     </Link>
                 </span>
                 <span className="nav-group-item">
                     <span className="icon icon-cloud"/>
-                    <Link to='/'>
-                         <span className={css(styles.menu)}>戻る</span>
+                    <Link to='/' className={css(styles.menu)}>
+                         戻る
                     </Link>
                 </span>
                 <span className="nav-group-item">
                     <span className="icon icon-cloud"/>
-                    <Link to='/logout'>
-                        <span className={css(styles.menu)}>ログアウト</span>
+                    <Link to='/logout' className={css(styles.menu)}>
+                        ログアウト
                     </Link>
                 </span>
             </nav>
         )
     }
 }
-
-
 export default menu;

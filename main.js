@@ -9,22 +9,24 @@ const app = express()
 
 /**
  * コマンドプロンプトからlogを見れるようにするためのもの
+ * ビルドする前にコメントアウトする
  * @type {morgan}
  */
-const logger = require('morgan')
-app.use(logger('dev'))
+// const logger = require('morgan')
+// app.use(logger('dev'))
 const cookieParser = require('cookie-parser')
 
 /**
  * DB情報の設定
  */
 const mysql = require('mysql')
+let sql
 const connection = mysql.createConnection({
     host : 'localhost',
     user : 'root',
     password : '',
     port : 3306,
-    database: 'taiken'
+    database: 'test'
 })
 /**
  * end
@@ -53,7 +55,6 @@ app.set('view engine', 'html');
  */
 const routes = require( __dirname + '/controller/routes/index')
 const login = require( __dirname + '/controller/routes/login')
-const logout = require( __dirname + '/controller/routes/logout')
 /**
  * end
  */
@@ -62,6 +63,7 @@ const logout = require( __dirname + '/controller/routes/logout')
  * listen()メソッドを実行して3000番ポートで待ち受け。
  **/
 const portNo = 3000
+const portNo_laravel = 8000
 const ip_address = '127.0.0.1'
 app.listen(portNo, ip_address)
 /**
@@ -161,7 +163,8 @@ app.post('/login', function(req, res) {
     let query_id = req.body.id
     let query_pass = req.body.pass
     // connection.connect()//書く必要がない
-    connection.query('SELECT k_no, k_name from kyak where k_id = "' + query_id + '" and k_pass = '+ query_pass, (err, results, fields) => {
+    sql = 'SELECT user_name from user where login_id = "' + query_id + '" and password = '+ query_pass
+    connection.query(sql, (err, results, fields) => {
         if (err) throw err
         const numRows = results.length;
 
@@ -190,7 +193,6 @@ app.post('/logout', (req,res) => {
  * app.use('このディレクトリに来たら','このディレクトリに遷移する')
  */
 app.use('/login', login)  // 追加
-// app.use('/logout', logout)  // 追加
 app.use('/', loginCheck, routes)  // sessionCheckを前処理に追加
 /**
  * ルーティング-end-
@@ -212,10 +214,12 @@ const BrowserWindow = electron.BrowserWindow
  */
 function createWindow () {
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 800, height: 600,useContentSize: true,})
+    mainWindow = new BrowserWindow({width: 800, height: 600,useContentSize: true,icon: __dirname + '/asset/img/icon.png',})
     // and load the index.html of the app.
-    mainWindow.loadURL(`http://${ip_address}:${portNo}/`)
-    // Open the DevTools.
+    // mainWindow.loadURL(`http://${ip_address}:${portNo}/`)
+    localStorage.getItem("message") ? mainWindow.loadURL(__dirname, '/view/entry/index/index.html') : mainWindow.loadURL(__dirname, '/view/entry/login/index.html')
+
+    // デベロッパーツールを開く
     mainWindow.webContents.openDevTools()
     // Emitted when the window is closed.
     mainWindow.on('closed', electron.app.quit)
@@ -253,7 +257,8 @@ electron.app.on('activate', function () {
 const {ipcMain} = require('electron')
 ipcMain.on('async',( event, args ) =>{
     connection.connect()
-    connection.query('SELECT * from kyak LIMIT 10', (err, rows, fields) => {
+    sql = 'SELECT * from user LIMIT 10'
+    connection.query(sql, (err, rows, fields) => {
         if (err) throw err
         // レンダラプロセスへ送る
         event.sender.send('async-reply', rows)
