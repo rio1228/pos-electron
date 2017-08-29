@@ -1,6 +1,12 @@
 /**
  * Created by Ryo Mikami on 2017/08/10.
  */
+/*メインプロセス
+※注意書き
+electronにはメインプロセスとレンダラプロセスが存在する
+このmain.jsがメインプロセスで./view/app~login/componentsの部分がレンダラプロセス
+レンダラプロセスではlocalstrageが使えるが、メインプロセスでは使えないので
+localstrageを使った条件分岐はレンダラプロセスの方でやらないとエラーが出る*/
 const electron = require('electron')
 /**
  *  expressモジュールをロードし、インスタンス化してappに代入。*/
@@ -62,7 +68,6 @@ const login = require( __dirname + '/controller/routes/login')
  * listen()メソッドを実行して3000番ポートで待ち受け。
  **/
 const portNo = 3000
-const portNo_laravel = 8000
 const ip_address = '127.0.0.1'
 app.listen(portNo, ip_address)
 /**
@@ -215,9 +220,7 @@ function createWindow () {
     // Create the browser window.
     mainWindow = new BrowserWindow({width: 800, height: 600,useContentSize: true,icon: __dirname + '/asset/img/icon.png',})
     // and load the index.html of the app.
-    // mainWindow.loadURL(`http://${ip_address}:${portNo}/`)
-    mainWindow.loadURL(__dirname+'/view/entry/index/index.html')
-    // localStorage.getItem("message") ? mainWindow.loadURL(__dirname, '/view/entry/index/index.html') : mainWindow.loadURL(__dirname, '/view/entry/login/index.html')
+    mainWindow.loadURL(`http://${ip_address}:${portNo}/`)
 
     // デベロッパーツールを開く
     mainWindow.webContents.openDevTools()
